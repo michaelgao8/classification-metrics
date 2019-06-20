@@ -9,11 +9,11 @@ import json
 parser = argparse.ArgumentParser(description = 'Generates data for metric plots')
 parser.add_argument('-i', '--input-file', action = "store", help = 'path to the input results file')
 parser.add_argument('-o', '--output-dir', action = "store", help = 'path to put plot data', default = '../data/') #TODO: Can probably be smarter
-parser.add_argument('-n', '--num-boots', action = "store", help = 'select the number of bootstrap samples to take', default = 500)
+parser.add_argument('-n', '--num-boots', action = "store", help = 'select the number of bootstrap samples to take. Default 500', default = 500)
 parser.add_argument('-v', '--verbose', action = "store_true", help = 'print out progress and helpful statements', default = False)
 
 if __name__ == '__main__':
-    DEV = True # Flag
+    DEV = False # Flag
 
     if DEV:
         class fakeArgs():
