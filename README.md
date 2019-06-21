@@ -9,13 +9,17 @@ The following tools are used in this directory:
 #### Depedencies:
 
 [Docker](https://docs.docker.com/) - Container software to keep all dependencies in one place
+
 [Pipenv](https://docs.pipenv.org/en/latest/) - Python package management -- Can be replaced by Docker
 
 #### Tools:
 
 [Papermill](https://papermill.readthedocs.io/en/latest/) - A tool that enables the parameterization of Jupyter notebooks. This is how we inject parameters to execute a jupyter notebook
+
 [Jupyter Notebooks](https://jupyter.org/) - A tool for writing code and displaying results in notebook format
+
 [nbconvert](https://github.com/jupyter/nbconvert) - A tool for converting jupyter notebooks to other formats, such as pdf, etc.
+
 [RISE](https://rise.readthedocs.io/en/stable/) - Allow for interactive slides in Jupyter Notebooks
 
 
