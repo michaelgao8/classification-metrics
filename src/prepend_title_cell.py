@@ -19,10 +19,10 @@ def add_ipynb_title(title: str, input_file: str, output_file: str, replace_first
     """
     # Ensure master template file won't be overwritten
     if output_file.split('/')[-1]== 'Metrics Template.ipynb':
-        raise('Master Template overwrite is not permitted. Choose another output filepath')
+        raise ValueError('Master Template overwrite is not permitted. Choose another output filepath')
         sys.exit('1')
     elif output_file.split('\\')[-1]== 'Metrics Template.ipynb': # ...Windows
-        raise('Master Template overwrite is not permitted. Choose another output filepath')
+        raise ValueError('Master Template overwrite is not permitted. Choose another output filepath')
         sys.exit('1')
 
     # Create Title Cell
