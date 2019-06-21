@@ -1,3 +1,6 @@
 data*
 checkpoint*
-
+.ipynb_checkpoints*
+.venv*
+.vscode*
+.DS_Store
