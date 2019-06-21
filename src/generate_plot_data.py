@@ -106,7 +106,7 @@ if __name__ == '__main__':
             precision_k.append(y_true_temp.mean())
 
     precision_at_k_final = {'precision_at_k': precision_k,
-                            'cutpoints': list(cutpoints)}
+                            'cutpoints': list(np.linspace(0.01, 1, 100))}
     
     # Calibration ===================================================
     prob_true, prob_pred = calibration_curve(y_true, y_pred, n_bins = 10)
