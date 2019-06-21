@@ -12,6 +12,7 @@ seaborn = "*"
 papermill = "*"
 nbconvert = "*"
 rise = "*"
+pytest = "*"
 
 [dev-packages]
 
