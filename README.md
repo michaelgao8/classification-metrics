@@ -55,6 +55,13 @@ From here, you can start the jupyter notebook by using:
 
 where the parameters can be found at the top of the `Metrics Template.ipynb`
 
+## Steps to convert to PDF
+
+1. Follow the steps to run scripts and then enter into the `output.ipynb` and add tags to code cells that you don't want to appear in the final PDF. The name of `output.ipynb` will beome the title for the PDF. 
+
+2. Run the following command to convert the `output.ipynb` file into PDF:
+`jupyter nbconvert output.ipynb --TagRemovePreprocessor.remove_cell_tags='{"tag_name_1","tag_name_2"}'  --TagRemovePreprocessor.enabled=True --to pdf`
+
 ## How to develop
 
 1. Clone this repository and change to the development branch
