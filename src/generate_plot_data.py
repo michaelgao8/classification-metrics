@@ -8,8 +8,8 @@ import json
 
 parser = argparse.ArgumentParser(description = 'Generates data for metric plots')
 parser.add_argument('-i', '--input-file', action = "store", help = 'path to the input results file')
-parser.add_argument('-o', '--output-dir', action = "store", help = 'path to put plot data', default = '../data/') #TODO: Can probably be smarter
-parser.add_argument('-n', '--num-boots', action = "store", help = 'select the number of bootstrap samples to take. Default 500', default = 500)
+parser.add_argument('-o', '--output-dir', action = "store", help = 'path to put plot data', default = './data/') #TODO: Can probably be smarter
+parser.add_argument('-n', '--num-boots', type=int, action = "store", help = 'select the number of bootstrap samples to take. Default 500', default = 500)
 parser.add_argument('-v', '--verbose', action = "store_true", help = 'print out progress and helpful statements', default = False)
 
 if __name__ == '__main__':
@@ -61,6 +61,17 @@ if __name__ == '__main__':
 
     for i in range(args.num_boots):
         y_true_resampled, y_pred_resampled = resample(y_true, y_pred)
+        
+        car=0
+        #roc_auc_score sends error if there is only one class present in y_true, just make sure that random sample has at
+        #least one 1 and at least one 0
+        if ((0 in y_true_resampled) == False):
+            car=1
+            continue
+        if ((1 in y_true_resampled) == False):
+            car=1
+            continue
+
 
         # ROC
         auc_temp = roc_auc_score(y_true_resampled, y_pred_resampled)
@@ -73,6 +84,7 @@ if __name__ == '__main__':
         # PID
         deciles = np.quantile(y_pred_resampled, np.linspace(1, .1, 10))
         for j in range(10):
+            print(car)
             if j != 9:
                 proportion_positive = y_true_resampled[(y_pred_resampled <= deciles[j])
                             & (y_pred_resampled > deciles[j+1])].mean()
