@@ -84,7 +84,7 @@ if __name__ == '__main__':
         # PID
         deciles = np.quantile(y_pred_resampled, np.linspace(1, .1, 10))
         for j in range(10):
-            print(car)
+
             if j != 9:
                 proportion_positive = y_true_resampled[(y_pred_resampled <= deciles[j])
                             & (y_pred_resampled > deciles[j+1])].mean()
