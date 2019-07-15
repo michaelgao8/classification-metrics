@@ -62,14 +62,12 @@ if __name__ == '__main__':
     for i in range(args.num_boots):
         y_true_resampled, y_pred_resampled = resample(y_true, y_pred)
         
-        car=0
+
         #roc_auc_score sends error if there is only one class present in y_true, just make sure that random sample has at
         #least one 1 and at least one 0
         if ((0 in y_true_resampled) == False):
-            car=1
             continue
         if ((1 in y_true_resampled) == False):
-            car=1
             continue
 
 
@@ -84,7 +82,6 @@ if __name__ == '__main__':
         # PID
         deciles = np.quantile(y_pred_resampled, np.linspace(1, .1, 10))
         for j in range(10):
-
             if j != 9:
                 proportion_positive = y_true_resampled[(y_pred_resampled <= deciles[j])
                             & (y_pred_resampled > deciles[j+1])].mean()
