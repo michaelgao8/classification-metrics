@@ -65,10 +65,6 @@ if __name__ == '__main__':
 
         #roc_auc_score sends error if there is only one class present in y_true, just make sure that random sample has at
         #least one 1 and at least one 0
-        if ((0 in y_true_resampled) == False):
-            continue
-        if ((1 in y_true_resampled) == False):
-            continue
 
 
         # ROC
