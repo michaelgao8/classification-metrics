@@ -51,9 +51,11 @@ From here, you can start the jupyter notebook by using:
 ## Steps to run scripts
 1. The input file must be a 2-column csv of model results. Following the `sklearn` convention, the first column will be the output (0 or 1) and the second column will have the predictions. If the file is not formatted correctly, the rest of the process will fail, so make sure the file is in the correct format.
 
-2. Run the generate_plot_data.py script and place the results in a directory that can be read from `papermill <path_to_metrics_template.ipynb> <path_to_output.ipynb> -p parameter1 value1 -p parameter2 value2`
+2. Run the generate_plot_data.py script and place the results in a directory that can be read from by future `papermill` calls.
 
-where the parameters can be found at the top of the `Metrics Template.ipynb`
+3. Run `output_dir=path_to_output runipy Create.ipynb` (Only if you are creating a new path for your ouput notebook)
+
+4. Finally, call `papermill <path_to_metrics_template.ipynb> <path_to_output.ipynb> -p parameter1 value1 -p parameter2 value2` where the parameters can be found at the top of the `Metrics Template.ipynb`
 
 ## How to develop
 
