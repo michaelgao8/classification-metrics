@@ -5,6 +5,8 @@ from sklearn.metrics import roc_auc_score, roc_curve, precision_recall_curve, av
 from sklearn.calibration import calibration_curve
 import argparse
 import json
+import codecs
+from scipy import interp
 
 parser = argparse.ArgumentParser(description = 'Generates data for metric plots')
 parser.add_argument('-i', '--input-file', action = "store", help = 'path to the input results file')
@@ -39,7 +41,16 @@ if __name__ == '__main__':
     # Receiver Operating Characteristic =======================================
     auroc = roc_auc_score(y_true, y_pred)
     fpr, tpr, thresholds = roc_curve(y_true, y_pred)
-    auc_final = {'auc': auroc, 
+    
+    mean_tpr1 = np.linspace(0, 1, args.num_boots)
+    mean_fpr1 = np.linspace(0, 1, args.num_boots)
+    mean_fpr = mean_fpr1.tolist()
+    mean_tpr = mean_tpr1.tolist()
+    auc_final = {'auc': auroc,
+                'mean_fpr': list(mean_fpr),
+                'mean_tpr': list(mean_tpr),
+                'tprs_upper': list(mean_fpr),
+                'tprs_lower': list(mean_tpr),
                 'fpr': list(fpr),
                 'tpr': list(tpr),
                 'thresholds': list(thresholds)
@@ -57,14 +68,18 @@ if __name__ == '__main__':
     # Bootstrapping ===========================================================
     auc_bootstrap_list = []
     pid_bootstrap_list = []
+    roc_boostrap_list = []
     avg_prec_bootstrap_list = []
-
+    tprs = []
     for i in range(args.num_boots):
         y_true_resampled, y_pred_resampled = resample(y_true, y_pred)
 
         # ROC
         auc_temp = roc_auc_score(y_true_resampled, y_pred_resampled)
         auc_bootstrap_list.append(auc_temp)
+        fpr1, tpr1, thresholds = roc_curve(y_true_resampled, y_pred_resampled)
+        tprs.append(interp(mean_fpr, fpr1, tpr1))
+        tprs[-1][0] = 0.0
 
         # Avg_precision
         avg_prec_temp = average_precision_score(y_true_resampled, y_pred_resampled)
@@ -83,9 +98,17 @@ if __name__ == '__main__':
 
 
     # Update AUC
-    auc_ci_bounds = np.quantile(auc_bootstrap_list, [0.025, 0.975])
+    mean_tpr = np.mean(tprs, axis=0)
+    mean_tpr[-1] = 1.0
+    std_tpr = np.std(tprs, axis=0)
+    tprs_upper = np.minimum(mean_tpr + std_tpr, 1)
+    tprs_lower = np.maximum(mean_tpr - std_tpr, 0)
+    auc_ci_bounds = np.quantile(auc_bootstrap_list, [0.025, 0.975]) 
     auc_final.update({'auc_lower_bound': auc_ci_bounds[0], 
-                      'auc_upper_bound': auc_ci_bounds[1]})
+                      'auc_upper_bound': auc_ci_bounds[1],
+                      'mean_tpr': mean_tpr.tolist(),
+                      'tprs_upper': tprs_upper.tolist(),
+                      'tprs_lower': tprs_lower.tolist()})
     
     avg_prec_ci_bounds = np.quantile(avg_prec_bootstrap_list, [0.025, 0.975])
     avg_precision_final.update({'avg_precision_lower_bound': avg_prec_ci_bounds[0],
@@ -96,6 +119,9 @@ if __name__ == '__main__':
                 'pid': pid_bootstrap_list}
 
     # TODO: Add bootstrapped version of ROC curve
+    #roc_ci_bounds = np.quantile(roc_bootstrap_list, [0.025, 0.975])
+    #roc_final.update({'roc_lower_bound': roc_ci_bounds[0], 
+                      #'roc_upper_bound': roc_ci_bounds[1]})
 
     # Precision @ k
     precision_k = []
@@ -114,6 +140,9 @@ if __name__ == '__main__':
     calibration_final = {'prob_true': list(prob_true),
                         'prob_pred': list(prob_pred)}
     
+    mean_tpr = np.mean(tprs, axis=0)
+    mean_tpr[-1] = 1.0
+    
     final_dict = {
         'ROC': auc_final,
         'avg_precision': avg_precision_final,
@@ -122,8 +151,8 @@ if __name__ == '__main__':
         'calibration': calibration_final
     }
 
-    with open(args.output_dir + 'plot_data.json', 'w') as f:
-        json.dump(final_dict, f, indent = 2)
+    with codecs.open(args.output_dir + 'plot_data.json', 'w', encoding='utf-8') as f:
+        json.dump(final_dict, f, sort_keys=True, indent=4)
 
 
 
