@@ -55,6 +55,13 @@ From here, you can start the jupyter notebook by using:
 
 where the parameters can be found at the top of the `Metrics Template.ipynb`
 
+## Steps to convert to PDF
+
+1. First, follow the steps to run scripts.
+
+2. Run the following command to convert the `output.ipynb` file into PDF:
+`jupyter nbconvert --to pdf --template hidecode output.ipynb`
+
 ## How to develop
 
 1. Clone this repository and change to the development branch
