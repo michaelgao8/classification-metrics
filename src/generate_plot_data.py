@@ -6,6 +6,7 @@ from sklearn.calibration import calibration_curve
 import argparse
 import json
 
+
 parser = argparse.ArgumentParser(description = 'Generates data for metric plots')
 parser.add_argument('-i', '--input-file', action = "store", help = 'path to the input results file')
 parser.add_argument('-o', '--output-dir', action = "store", help = 'path to put plot data', default = './data/') #TODO: Can probably be smarter
@@ -35,15 +36,24 @@ if __name__ == '__main__':
     assert all(output_df.iloc[:, 0].isin([0, 1])), 'The first column of the results must be the outcome. Values other than 0 or 1 detected'
     y_true = output_df.iloc[:, 0].values
     y_pred = output_df.iloc[:, 1].values
-
+    print(y_pred)
+    true=[None] * len(y_pred)
+   
+    
+    for i in range(len(y_pred)):
+        true[i]=int(y_true[i])
+    
+    
     # Receiver Operating Characteristic =======================================
     auroc = roc_auc_score(y_true, y_pred)
     fpr, tpr, thresholds = roc_curve(y_true, y_pred)
     auc_final = {'auc': auroc, 
                 'fpr': list(fpr),
                 'tpr': list(tpr),
-                'thresholds': list(thresholds)
-    }
+                'thresholds': list(thresholds),
+                'true': list(true),
+                'predicted': list(y_pred),
+                 }
 
     # Precision Recall
     avg_precision = average_precision_score(y_true, y_pred)
